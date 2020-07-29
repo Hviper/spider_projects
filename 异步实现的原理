@@ -1,0 +1,13 @@
+异步实现的原理是：当遇到阻塞操作时，对于阻塞操作，协程的处理方式是对其阻塞操作进行挂起！！！
+
+await 和 yield from 表示当它们后面的代码为阻塞操作时主动挂起，不会对其进行等待，而是继续执行下面的代码
+
+当被挂起的代码中假如存在基于同步的模块代码，需要将它 aiohttp 这个针对requests网络请求变成基于异步请求的模块
+
+这里要先import aiohttp，再在函数创建一个session对象，async with aiohttp.ClientSession as session:
+再进行数据的请求并且返回response【网络请求为耗时操作，需要手动挂起】 -->async with await session.get() as response
+最后对返回的数据进行数据形式的选择：
+    1.text()返回字符串形式的响应数据
+    2.read()返回的是二进制类型的响应数据
+    3.json()返回的是json数据类型的数据
+    4.对获取到的数据类型之后还要对响应数据进行手动挂起   page_text = await response.text()
